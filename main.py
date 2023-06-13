@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import settings
 import utils
 import link_checker
+import boto3
 
 load_dotenv()
 
@@ -50,24 +51,27 @@ for group in response.json()[10:11]:
     if len([i for i in report if len(i["errors"]) > 0]) > 0:
         message = link_checker.get_message(report=report, receiver=receiver)
 
-        host = os.environ.get("SMTP_ENDPOINT")
-        port = os.environ.get("SMTP_PORT")
-        user = os.environ.get("SMTP_USER")
-        password = os.environ.get("SMTP_PASSWORD")
+        ses = boto3.client(
+                "ses",
+                region_name="eu-central-1",
+                aws_access_key_id=os.environ.get("AWS_ACCESS_KEY"),
+                aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY")
+            )
 
-        context = ssl.create_default_context()
+        try:
+            ses.send_raw_email(
+                Source=message['From'],
+                Destinations=[receiver],
+                RawMessage={
+                    'Data': message.as_string()
+                }
+            )
 
-        with SMTP(host,port) as server :
-            try:
-                server.starttls(context=context)
-                server.login(user=user, password=password)
-                server.sendmail(settings.MAIL_SENDER, receiver, message.as_string())
+        except Exception as exc:
+            logger.error(repr(exc))
 
-            except Exception as e:
-                logger.exception(e)
-
-            else:
-                logger.info("Group : %s - Mail sent", group["name"])
+        else:
+            logger.info("Group : %s - Mail sent", group["name"])
 
     else:
         logger.info("Group : %s - has no invalid URL", group["name"])
