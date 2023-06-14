@@ -1,13 +1,9 @@
-import os
 import requests
-from dotenv import load_dotenv
 import boto3
 import settings
 import utils
 import link_checker
 
-
-load_dotenv()
 
 logger = utils.setup_logger(__name__)
 
@@ -25,7 +21,7 @@ for group in response.json()[10:11]:
     logger.info("Processing group : %s", group["name"])
 
     indexes = utils.get_index(in_groups=[group["id"]])
-    receiver = group["email"]
+    receiver =  group["email"]
 
     # list of tested URL that are valid
     # We do not test them again
