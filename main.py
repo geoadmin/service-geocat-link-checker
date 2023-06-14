@@ -1,12 +1,11 @@
 import os
-import ssl
-from smtplib import SMTP
 import requests
 from dotenv import load_dotenv
+import boto3
 import settings
 import utils
 import link_checker
-import boto3
+
 
 load_dotenv()
 
