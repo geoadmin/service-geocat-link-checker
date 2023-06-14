@@ -50,12 +50,7 @@ for group in response.json()[10:11]:
     if len([i for i in report if len(i["errors"]) > 0]) > 0:
         message = link_checker.get_message(report=report, receiver=receiver)
 
-        ses = boto3.client(
-                "ses",
-                region_name="eu-central-1",
-                aws_access_key_id=os.environ.get("AWS_ACCESS_KEY"),
-                aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY")
-            )
+        ses = boto3.client("ses", region_name="eu-central-1")
 
         try:
             ses.send_raw_email(
