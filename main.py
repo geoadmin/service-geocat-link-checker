@@ -4,64 +4,70 @@ import settings
 import utils
 import link_checker
 
+def check_link():
+    """Main function to check link within metadata"""
 
-logger = utils.setup_logger(__name__)
+    logger = utils.setup_logger(__name__)
 
-headers = {"accept": "application/json", "Content-Type": "application/json"}
+    headers = {"accept": "application/json", "Content-Type": "application/json"}
 
-response = requests.get(url = f"{settings.HOST}/geonetwork/srv/api/groups",
-                        headers=headers, timeout=10)
+    response = requests.get(url = f"{settings.HOST}/geonetwork/srv/api/groups",
+                            headers=headers, timeout=10)
 
-if response.status_code != 200:
-    raise Exception("Cannot retrieve group information")
+    if response.status_code != 200:
+        raise Exception("Cannot retrieve group information")
 
 
-for group in response.json()[10:11]:
+    for group in response.json()[10:11]:
 
-    logger.info("Processing group : %s", group["name"])
+        logger.info("Processing group : %s", group["name"])
 
-    indexes = utils.get_index(in_groups=[group["id"]])
-    receiver =  group["email"]
+        indexes = utils.get_index(in_groups=[group["id"]])
+        receiver =  group["email"]
 
-    # list of tested URL that are valid
-    # We do not test them again
-    valid_url = []
+        # list of tested URL that are valid
+        # We do not test them again
+        valid_url = []
 
-    report = []
+        report = []
 
-    count = 0
+        count = 0
 
-    for index in indexes:
+        for index in indexes:
 
-        result, new_valid_url = link_checker.check_metadata_url(index=index,
-                                                     valid_url=valid_url)
+            result, new_valid_url = link_checker.check_metadata_url(index=index,
+                                                        valid_url=valid_url)
 
-        report.append(result)
-        valid_url += new_valid_url
+            report.append(result)
+            valid_url += new_valid_url
 
-        count += 1
-        logger.info("metadata processed : %s - %s%%", index["_source"]["uuid"],
-                    round((count / len(indexes)) * 100, 1))
+            count += 1
+            logger.info("metadata processed : %s - %s%%", index["_source"]["uuid"],
+                        round((count / len(indexes)) * 100, 1))
 
-    if len([i for i in report if len(i["errors"]) > 0]) > 0:
-        message = link_checker.get_message(report=report, receiver=receiver)
+        if len([i for i in report if len(i["errors"]) > 0]) > 0:
+            message = link_checker.get_message(report=report, receiver=receiver)
 
-        ses = boto3.client("ses", region_name="eu-central-1")
+            ses = boto3.client("ses", region_name="eu-central-1")
 
-        try:
-            ses.send_raw_email(
-                Source=message['From'],
-                Destinations=[receiver],
-                RawMessage={
-                    'Data': message.as_string()
-                }
-            )
+            try:
+                ses.send_raw_email(
+                    Source=message['From'],
+                    Destinations=[receiver],
+                    RawMessage={
+                        'Data': message.as_string()
+                    }
+                )
 
-        except Exception as exc:
-            logger.error(repr(exc))
+            except Exception as exc:
+                logger.error(repr(exc))
+
+            else:
+                logger.info("Group : %s - Mail sent", group["name"])
 
         else:
-            logger.info("Group : %s - Mail sent", group["name"])
+            logger.info("Group : %s - has no invalid URL", group["name"])
 
-    else:
-        logger.info("Group : %s - has no invalid URL", group["name"])
+
+def lambda_handler(event, context):
+    check_link()
