@@ -34,35 +34,20 @@ SEARCH_UUID_API_BODY = {
             "must": []
         }
     },
+    "_source": {
+        "includes": [
+            "uuid",
+            "resourceTitleObject",
+            "MD_LegalConstraintsOtherConstraintsObject",
+            "contact",
+            "contactForResource",
+            "contactForDistribution",
+            "link"
+        ]
+    },
     "track_total_hits": True,
     "sort": {"_id": "asc"},
     "size": 3000
-}
-
-GET_MD_INDEX_API_BODY = {
-    "query": {
-        "bool": {
-            "must": [
-                {
-                    "multi_match": {
-                        "query": None,
-                        "fields": [
-                            "id",
-                            "uuid"
-                        ]
-                    }
-                },
-                {
-                    "terms": {
-                        "isTemplate": [
-                            "n",
-                            "y"
-                        ]
-                    }
-                }
-            ]
-        }
-    }
 }
 
 MAIL_SENDER = "geocat@swisstopo.ch"
