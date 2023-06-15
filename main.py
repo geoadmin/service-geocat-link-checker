@@ -1,3 +1,4 @@
+import logging
 import requests
 import boto3
 import settings
@@ -8,7 +9,9 @@ import link_checker
 def check_link():
     """Main function to check link within metadata"""
 
-    logger = utils.setup_logger(__name__)
+    if __name__ not in logging.Logger.manager.loggerDict.keys():
+            logger = utils.setup_logger(__name__)
+            logger.propagate = False
 
     headers = {"accept": "application/json", "Content-Type": "application/json"}
 

@@ -32,7 +32,7 @@ def setup_logger(name: str, level=logging.INFO) -> object:
     Returns:
         Logger object
     """
-    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", '%Y-%m-%d %H:%M:%S')
+    formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s", '%Y-%m-%d %H:%M:%S')
 
     handler = logging.StreamHandler()
     handler.setLevel(level)
