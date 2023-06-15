@@ -1,3 +1,4 @@
+import logging
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from http import HTTPStatus
@@ -6,7 +7,9 @@ import requests
 import settings
 import utils
 
-logger = utils.setup_logger(__name__)
+if __name__ not in logging.Logger.manager.loggerDict.keys():
+    logger = utils.setup_logger(__name__)
+    logger.propagate = False
 
 
 def __url_checker(url: str, allow_redirects: bool = True) -> bool:

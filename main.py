@@ -1,4 +1,5 @@
 import os
+import logging
 import requests
 from dotenv import load_dotenv
 import boto3
@@ -9,7 +10,9 @@ import link_checker
 
 load_dotenv()
 
-logger = utils.setup_logger(__name__)
+if __name__ not in logging.Logger.manager.loggerDict.keys():
+    logger = utils.setup_logger(__name__)
+    logger.propagate = False
 
 headers = {"accept": "application/json", "Content-Type": "application/json"}
 
