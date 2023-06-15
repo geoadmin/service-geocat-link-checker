@@ -9,9 +9,12 @@ import link_checker
 def check_link():
     """Main function to check link within metadata"""
 
-    if __name__ not in logging.Logger.manager.loggerDict.keys():
+    if __name__ in logging.Logger.manager.loggerDict.keys():
+        logger = logging.getLogger(__name__)
+    else:
         logger = utils.setup_logger(__name__)
-        logger.propagate = False
+        
+    logger.propagate = False
 
     headers = {"accept": "application/json", "Content-Type": "application/json"}
 
@@ -22,7 +25,7 @@ def check_link():
         raise Exception("Cannot retrieve group information")
 
 
-    for group in response.json()[10:11]:
+    for group in response.json()[1:2]:
 
         logger.info("Processing group : %s", group["name"])
 
