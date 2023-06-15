@@ -1,6 +1,6 @@
 # geocat.ch link checker
 This version is aimed at being hosted and run into an AWS lambda function. It uses the AWS python SDK boto3 to access SES and send emails.
-Since everything runs inside AWS, no AWS credentials in code is required.
+Since everything runs inside AWS, no AWS credentials is required.
 
 ## Build Lambda Deployment Package
 Create and activate a virtual environment
@@ -16,7 +16,7 @@ Deactivate the virtual environment and build a deployment package for lambda as 
 ```bash
 deactivate
 cd .venv/lib/python3.x/site-packages
-zip zip -r ../../../../deployment_package.zip .
+zip -r ../../../../deployment_package.zip .
 cd ../../../../
 zip deployment_package.zip main.py link_checker.py settings.py utils.py
 ```
