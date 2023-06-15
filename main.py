@@ -10,8 +10,8 @@ def check_link():
     """Main function to check link within metadata"""
 
     if __name__ not in logging.Logger.manager.loggerDict.keys():
-            logger = utils.setup_logger(__name__)
-            logger.propagate = False
+        logger = utils.setup_logger(__name__)
+        logger.propagate = False
 
     headers = {"accept": "application/json", "Content-Type": "application/json"}
 
