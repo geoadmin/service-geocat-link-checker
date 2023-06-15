@@ -26,7 +26,7 @@ for group in response.json()[1:2]:
     logger.info("Processing group : %s", group["name"])
 
     indexes = utils.get_index(in_groups=[group["id"]])
-    receiver = "benoitregamey@hotmail.com" #group["email"]
+    receiver = group["email"]
 
     # list of tested URL that are valid
     # We do not test them again
