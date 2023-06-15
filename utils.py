@@ -98,10 +98,10 @@ def get_metadata_languages(metadata: bytes) -> dict:
                     namespaces=settings.NS).attrib["codeListValue"]
 
     for lang in xml_root.findall("./gmd:locale//gmd:LanguageCode", namespaces=settings.NS):
-            if lang.attrib["codeListValue"] != languages["language"] and \
-                lang.attrib["codeListValue"] not in languages["locales"]:
+        if lang.attrib["codeListValue"] != languages["language"] and \
+            lang.attrib["codeListValue"] not in languages["locales"]:
 
-                languages["locales"].append(lang.attrib["codeListValue"])
+            languages["locales"].append(lang.attrib["codeListValue"])
 
     return languages
 

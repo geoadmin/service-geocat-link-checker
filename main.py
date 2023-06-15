@@ -4,6 +4,7 @@ import settings
 import utils
 import link_checker
 
+
 def check_link():
     """Main function to check link within metadata"""
 
@@ -23,7 +24,7 @@ def check_link():
         logger.info("Processing group : %s", group["name"])
 
         indexes = utils.get_index(in_groups=[group["id"]])
-        receiver =  group["email"]
+        receiver =  "benoitregamey@hotmail.com" #group["email"]
 
         # list of tested URL that are valid
         # We do not test them again
