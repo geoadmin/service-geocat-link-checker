@@ -10,9 +10,10 @@ import link_checker
 
 load_dotenv()
 
-if __name__ not in logging.Logger.manager.loggerDict.keys():
+if __name__ in logging.Logger.manager.loggerDict.keys():
+    logger = logging.getLogger(__name__)
+else:
     logger = utils.setup_logger(__name__)
-    logger.propagate = False
 
 headers = {"accept": "application/json", "Content-Type": "application/json"}
 
