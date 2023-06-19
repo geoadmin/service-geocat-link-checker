@@ -116,35 +116,37 @@ def check_metadata_url(index: dict, valid_url: list) -> dict:
     if "link" in index["_source"]:
         for i in index["_source"]["link"]:
             if i["protocol"].startswith(("OGC:WMS", "OGC:WMTS", "OGC:WFS")):
-                if i["url"] not in valid_url:
-                    if not __url_checker(i["url"], allow_redirects=False):
+                for url in set(i["urlObject"].values()):
+                    if url not in valid_url:
+                        if not __url_checker(url, allow_redirects=False):
 
-                        result["errors"].append(
-                            {
-                                "url": i["url"],
-                                "location": f"Online resource URL with {i['protocol']} protocol"
-                            }
-                        )
+                            result["errors"].append(
+                                {
+                                    "url": url,
+                                    "location": f"Online resource URL with {i['protocol']} protocol (redirect not allowed for geoservices)"
+                                }
+                            )
 
-                    else:
-                        new_valid_url.append(i["url"])
-                        valid_url.append(i["url"])
+                        else:
+                            new_valid_url.append(url)
+                            valid_url.append(url)
             else:
-                if i["url"] not in valid_url:
-                    if not __url_checker(i["url"]):
+                for url in set(i["urlObject"].values()):
+                    if url not in valid_url:
+                        if not __url_checker(url):
 
-                        if i['protocol'] == "":
-                            i['protocol'] = "missing"
+                            if i['protocol'] == "":
+                                i['protocol'] = "missing"
 
-                        result["errors"].append(
-                            {
-                                "url": i["url"],
-                                "location": f"Online resource URL with {i['protocol']} protocol"
-                            }
-                        )
-                    else:
-                        new_valid_url.append(i["url"])
-                        valid_url.append(i["url"])
+                            result["errors"].append(
+                                {
+                                    "url": url,
+                                    "location": f"Online resource URL with {i['protocol']} protocol"
+                                }
+                            )
+                        else:
+                            new_valid_url.append(url)
+                            valid_url.append(url)
 
     return result, new_valid_url
 
