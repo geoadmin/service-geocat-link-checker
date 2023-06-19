@@ -41,7 +41,7 @@ __pypackages__/
 
 # Environment
 .env
-.venv
+.venv*
 env/
 venv/
 ENV/
@@ -81,3 +81,5 @@ GitHub.sublime-settings
 # Visual Studio Code # 
 .vscode/* 
 .history
+
+.DS_Store
