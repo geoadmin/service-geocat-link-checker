@@ -1,4 +1,3 @@
-import os
 import logging
 import requests
 import boto3
@@ -53,9 +52,7 @@ for group in response.json()[1:2]:
 
         ses = boto3.client(
                 "ses",
-                region_name="eu-central-1",
-                aws_access_key_id=os.environ.get("AWS_ACCESS_KEY"),
-                aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY")
+                region_name="eu-central-1"
             )
 
         try:
