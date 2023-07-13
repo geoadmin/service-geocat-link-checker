@@ -12,6 +12,8 @@ logger = utils.setup_logger(__name__)
 def __url_checker(url: str, allow_redirects: bool = True) -> bool:
     """Check if URL is valid"""
 
+    headers = {"accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"}
+
     RETRY = 5
 
     RETRY_CODE = [
@@ -22,11 +24,18 @@ def __url_checker(url: str, allow_redirects: bool = True) -> bool:
         HTTPStatus.GATEWAY_TIMEOUT,
     ]
 
+    PASS_CODE = [
+        HTTPStatus.UNAUTHORIZED,
+        HTTPStatus.FORBIDDEN,
+    ]
+
     for i in range(RETRY):
 
         try:
-            response = requests.get(url=url, allow_redirects=allow_redirects, timeout=30)
-            response.raise_for_status()
+            with requests.get(url=url, allow_redirects=allow_redirects,
+                                timeout=30, headers=headers, stream=True) as response:
+
+                response.raise_for_status()
 
         except requests.exceptions.HTTPError as exc:
 
@@ -37,6 +46,9 @@ def __url_checker(url: str, allow_redirects: bool = True) -> bool:
                 # retry after n seconds
                 time.sleep((i+1)**2)
                 continue
+
+            elif code in PASS_CODE:
+                return True
 
             else:
                 logger.error("Invalid URL : %s - %s", url, repr(exc))
@@ -72,20 +84,20 @@ def check_metadata_url(index: dict, valid_url: list) -> dict:
     new_valid_url = []
 
     # Other constraints Link    
-    if "MD_LegalConstraintsOtherConstraintsObject" in index["_source"]:
-        for i in index["_source"]["MD_LegalConstraintsOtherConstraintsObject"]:
-            if "link" in i:
-                if i["link"] not in valid_url:
-                    if not __url_checker(i["link"]):
-                        result["errors"].append(
-                            {
-                                "url": i["link"],
-                                "location": "Other Constraints"
-                            }
-                        )
-                    else:
-                        new_valid_url.append(i["link"])
-                        valid_url.append(i["link"])
+    # if "MD_LegalConstraintsOtherConstraintsObject" in index["_source"]:
+    #     for i in index["_source"]["MD_LegalConstraintsOtherConstraintsObject"]:
+    #         if "link" in i:
+    #             if i["link"] not in valid_url:
+    #                 if not __url_checker(i["link"]):
+    #                     result["errors"].append(
+    #                         {
+    #                             "url": i["link"],
+    #                             "location": "Other Constraints"
+    #                         }
+    #                     )
+    #                 else:
+    #                     new_valid_url.append(i["link"])
+    #                     valid_url.append(i["link"])
 
     # Website for contacts
     for contact in ["contact", "contactForResource", "contactForDistribution"]:

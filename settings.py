@@ -60,6 +60,8 @@ Hello,
 While accessing the following URL, we found some unexcepted behaviour.
 Please check if those URL are still available and fix them if necessary.
 
+PS: HTTPS or HTTP schema is mandatory for all URLs in geocat.ch.
+
 Thank you for your collaboration.
 The geocat.ch team
 
@@ -73,6 +75,7 @@ MAIL_BODY_START_HTML = """
     <p>Hello<br><br>
         While accessing the following URL, we found some unexcepted behaviour.<br>
         Please check if those URL are still available and fix them if necessary.<br><br>
+        PS: HTTPS or HTTP schema is mandatory for all URLs in geocat.ch.<br><br>
        Thank you for your collaboration.<br>
        The geocat.ch team<br><br>
        ----------<br><br>
