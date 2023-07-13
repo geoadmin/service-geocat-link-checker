@@ -20,7 +20,7 @@ if response.status_code != 200:
     raise Exception("Cannot retrieve group information")
 
 
-for group in response.json()[1:2]:
+for group in response.json():
 
     logger.info("Processing group : %s", group["name"])
 
