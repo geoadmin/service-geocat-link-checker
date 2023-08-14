@@ -1,3 +1,23 @@
+PROXY = [
+    {
+        "http": "proxy-bvcol.admin.ch:8080",
+        "https": "proxy-bvcol.admin.ch:8080",
+    },
+    {
+        "http": "proxy.admin.ch:8080",
+        "https": "proxy.admin.ch:8080",
+    },
+    {
+        "http": "prxp01.admin.ch:8080",
+        "https": "prxp01.admin.ch:8080",
+    },
+    {
+        "http": "prp01.adb.intra.admin.ch",
+        "https": "prp01.adb.intra.admin.ch",
+    },   
+    {}
+]
+
 HOST = "https://www.geocat.ch"
 
 URL_METADATA = f"{HOST}/geonetwork/srv/eng/catalog.search#/metadata/"

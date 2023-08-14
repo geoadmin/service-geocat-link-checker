@@ -3,26 +3,26 @@ import logging
 import xml.etree.ElementTree as ET
 import copy
 import requests
-import settings
+import config
 
 
 def xpath_ns_url2code(path: str) -> str:
     """Replace the namespace url by the namespace acronym in the given xpath"""
-    for key in settings.NS:
-        path = path.replace("{" + settings.NS[key] + "}", f"{key}:")
+    for key in config.NS:
+        path = path.replace("{" + config.NS[key] + "}", f"{key}:")
 
     return path
 
 
 def xpath_ns_code2url(path: str) -> str:
     """Replace the namespace url by the namespace acronym in the given xpath"""
-    for key in settings.NS:
-        path = path.replace(f"{key}:", "{" + settings.NS[key] + "}")
+    for key in config.NS:
+        path = path.replace(f"{key}:", "{" + config.NS[key] + "}")
 
     return path
 
 
-def setup_logger(name: str, level=logging.INFO) -> object:
+def setup_logger(name: str, logfile: str, level=logging.INFO) -> object:
     """Setup a logger for logging
 
     Args:
@@ -36,13 +36,47 @@ def setup_logger(name: str, level=logging.INFO) -> object:
 
     handler = logging.StreamHandler()
     handler.setLevel(level)
-
     handler.setFormatter(formatter)
+
+    fileHandler = logging.FileHandler(logfile)
+    fileHandler.setLevel(level)
+    fileHandler.setFormatter(formatter)
+
     logger = logging.getLogger(name)
     logger.setLevel(level)
     logger.addHandler(handler)
+    logger.addHandler(fileHandler)
 
     return logger
+
+
+def get_log_config(logfile: str):
+    return {
+    "version":1,
+    "root":{
+        "handlers" : ["console", "file"],
+        "level": "INFO"
+    },
+    "handlers":{
+        "console":{
+            "formatter": "std_out",
+            "class": "logging.StreamHandler",
+            "level": "INFO"
+        },
+        "file":{
+            "formatter": "std_out",
+            "class": "logging.FileHandler",
+            "level": "INFO",
+            "filename": logfile
+        }   
+    },
+    "formatters":{
+        "std_out": {
+            "format": "%(asctime)s - %(levelname)s - %(message)s",
+            "datefmt":"%Y-%m-%d %H:%M:%S"
+        }
+    },
+}
 
 
 def okgreen(text):
@@ -95,9 +129,9 @@ def get_metadata_languages(metadata: bytes) -> dict:
     xml_root = ET.fromstring(metadata)
 
     languages["language"] = xml_root.find("./gmd:language/gmd:LanguageCode",
-                    namespaces=settings.NS).attrib["codeListValue"]
+                    namespaces=config.NS).attrib["codeListValue"]
 
-    for lang in xml_root.findall("./gmd:locale//gmd:LanguageCode", namespaces=settings.NS):
+    for lang in xml_root.findall("./gmd:locale//gmd:LanguageCode", namespaces=config.NS):
             if lang.attrib["codeListValue"] != languages["language"] and \
                 lang.attrib["codeListValue"] not in languages["locales"]:
 
@@ -132,7 +166,7 @@ def __search_md_index(body: dict) -> list:
 
     while True:
 
-        response = requests.post(url=f"{settings.HOST}/geonetwork/srv/api/search/records/_search",
+        response = requests.post(url=f"{config.HOST}/geonetwork/srv/api/search/records/_search",
                                  headers=headers, data=body, timeout=300)
 
         if response.status_code == 200:
@@ -160,7 +194,7 @@ def get_index(with_harvested: bool = True, valid_only: bool = False, published_o
     You can specify if you want or not : harvested, valid, published records and templates.
     """
 
-    body = copy.deepcopy(settings.SEARCH_UUID_API_BODY)
+    body = copy.deepcopy(config.SEARCH_UUID_API_BODY)
 
     if with_templates:
         body["query"]["bool"]["must"].append({"terms": {"isTemplate": ["y", "n"]}})

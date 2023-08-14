@@ -3,11 +3,10 @@ from email.mime.multipart import MIMEMultipart
 from http import HTTPStatus
 import time
 import requests
-import settings
-import utils
+import config
+import logging
 
-logger = utils.setup_logger(__name__)
-
+logger = logging.getLogger(__name__)
 
 def __url_checker(url: str, allow_redirects: bool = True) -> bool:
     """Check if URL is valid"""
@@ -161,17 +160,17 @@ def get_message(report: list, receiver: str) -> object:
     """Creates an email message object"""
 
     message = MIMEMultipart("alternative")
-    message["Subject"] = settings.MAIL_SUBJECT
-    message["From"] = settings.MAIL_SENDER
+    message["Subject"] = config.MAIL_SUBJECT
+    message["From"] = config.MAIL_SENDER
     message["To"] = receiver
 
-    body_text = settings.MAIL_BODY_START_TEXT
-    body_html = settings.MAIL_BODY_START_HTML
+    body_text = config.MAIL_BODY_START_TEXT
+    body_html = config.MAIL_BODY_START_HTML
 
     for metadata in [i for i in report if len(i["errors"]) > 0]:
 
-        body_text += f"Dataset: {settings.URL_METADATA}{metadata['uuid']}\n\n"
-        body_html += f"Dataset: <a href='{settings.URL_METADATA}{metadata['uuid']}'>{metadata['title']}</a><br><br>"
+        body_text += f"Dataset: {config.URL_METADATA}{metadata['uuid']}\n\n"
+        body_html += f"Dataset: <a href='{config.URL_METADATA}{metadata['uuid']}'>{metadata['title']}</a><br><br>"
 
         for error in metadata["errors"]:
 
