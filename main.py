@@ -1,4 +1,5 @@
 import os
+import sys
 import ssl
 from smtplib import SMTP
 import requests
@@ -13,8 +14,10 @@ import link_checker
 
 load_dotenv()
 
-if not os.path.exists("logs"):
-    os.makedirs("logs")
+logs_dir = os.path.join(os.path.dirname(__file__), "logs")
+
+if not os.path.exists(logs_dir):
+    os.makedirs(logs_dir)
 
 logfile = f"{datetime.now().strftime('%Y%m%d%H%M%S')}.log"
 
@@ -28,7 +31,7 @@ handler = logging.StreamHandler()
 handler.setLevel("INFO")
 handler.setFormatter(formatter)
 
-fileHandler = logging.FileHandler(os.path.join("logs", logfile))
+fileHandler = logging.FileHandler(os.path.join(logs_dir, logfile))
 fileHandler.setLevel("INFO")
 fileHandler.setFormatter(formatter)
 
@@ -52,15 +55,26 @@ for proxies in config.PROXY:
         os.environ["HTTPS_PROXY"] = proxies["https"]
         break
 
-if response.status_code != 200:
-    raise Exception("Cannot retrieve group information")
-
+try:
+    response
+except NameError:
+    logger.error("Cannot retrieve group information")
+    sys.exit()
+else:
+    if response.status_code != 200:
+        logger.error("Cannot retrieve group information")
+        sys.exit()
 
 for group in response.json():
 
     logger.info("Processing group : %s", group["name"])
 
-    indexes = utils.get_index(in_groups=[group["id"]])
+    try:
+        indexes = utils.get_index(in_groups=[group["id"]])
+    except:
+        logger.error("Processing group : %s : couldn't fetch metadata index", group["name"])
+        continue
+
     receiver = group["email"]
 
     # list of tested URL that are valid

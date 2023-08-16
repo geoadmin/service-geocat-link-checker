@@ -169,6 +169,8 @@ def __search_md_index(body: dict) -> list:
         response = requests.post(url=f"{config.HOST}/geonetwork/srv/api/search/records/_search",
                                  headers=headers, data=body, timeout=300)
 
+        response.raise_for_status()
+
         if response.status_code == 200:
             for hit in response.json()["hits"]["hits"]:
                 md_index.append(hit)
