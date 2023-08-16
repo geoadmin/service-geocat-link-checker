@@ -25,22 +25,7 @@ logfile = f"{datetime.now().strftime('%Y%m%d%H%M%S')}.log"
 # loggingconfig.dictConfig(log_config)
 # logger = logging.getLogger(__name__)
 
-formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", '%Y-%m-%d %H:%M:%S')
-
-handler = logging.StreamHandler()
-handler.setLevel("INFO")
-handler.setFormatter(formatter)
-
-fileHandler = logging.FileHandler(os.path.join(logs_dir, logfile))
-fileHandler.setLevel("INFO")
-fileHandler.setFormatter(formatter)
-
-logger = logging.getLogger(__name__)
-logger.handlers.clear()
-
-logger.setLevel("INFO")
-logger.addHandler(handler)
-logger.addHandler(fileHandler)
+logger = utils.setup_logger(__name__, logfile=os.path.join(logs_dir, logfile))
 
 headers = {"accept": "application/json", "Content-Type": "application/json"}
 

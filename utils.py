@@ -43,6 +43,8 @@ def setup_logger(name: str, logfile: str, level=logging.INFO) -> object:
     fileHandler.setFormatter(formatter)
 
     logger = logging.getLogger(name)
+    logger.handlers.clear()
+    
     logger.setLevel(level)
     logger.addHandler(handler)
     logger.addHandler(fileHandler)
