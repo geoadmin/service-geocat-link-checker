@@ -163,6 +163,7 @@ def get_message(report: list, receiver: str) -> object:
     message["Subject"] = config.MAIL_SUBJECT
     message["From"] = config.MAIL_SENDER
     message["To"] = receiver
+    message["X-Priority"] = "1"  # 1 (High), 3 (normal), 5 (Low)
 
     body_text = config.MAIL_BODY_START_TEXT
     body_html = config.MAIL_BODY_START_HTML

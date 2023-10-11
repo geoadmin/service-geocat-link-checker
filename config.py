@@ -77,10 +77,10 @@ MAIL_SUBJECT = "geocat.ch - Invalid URL in your metadata"
 MAIL_BODY_START_TEXT = """
 Hello,
 
-While accessing the following URL, we found some unexcepted behaviour.
+While accessing the following URL, we found some unexpected behaviour.
 Please check if those URL are still available and fix them if necessary.
 
-PS: HTTPS or HTTP schema is mandatory for all URLs in geocat.ch.
+PS: HTTPS or HTTP schema is mandatory for all URL in geocat.ch.
 
 Thank you for your collaboration.
 The geocat.ch team
@@ -93,9 +93,9 @@ MAIL_BODY_START_HTML = """
 <html>
   <body>
     <p>Hello<br><br>
-        While accessing the following URL, we found some unexcepted behaviour.<br>
+        While accessing the following URL, we found some unexpected behaviour.<br>
         Please check if those URL are still available and fix them if necessary.<br><br>
-        PS: HTTPS or HTTP schema is mandatory for all URLs in geocat.ch.<br><br>
+        PS: HTTPS or HTTP schema is mandatory for all URL in geocat.ch.<br><br>
        Thank you for your collaboration.<br>
        The geocat.ch team<br><br>
        ----------<br><br>
