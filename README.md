@@ -12,7 +12,7 @@ How to know where the certificate is in the default environment
 from certifi import where
 where()
 ```
-Overwrite the `cacert.pem` file into the custom python environment. Usually `your-env/Lib/site-packages/certifi/cacert.pem`
+Overwrite the `cacert.pem` file into the custom python environment, usually `your-env/Lib/site-packages/certifi/cacert.pem`, by the one found on the default environment.
 
 ### SMTP Mail Server Hostname
 You can pass SMTP hostname in environment variables
