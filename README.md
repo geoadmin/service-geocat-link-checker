@@ -1,5 +1,5 @@
-# geocat.ch link checker
-This version uses SMTP service to send email w/o credentials (username, password).
+# geocat.ch link checker 
+This version use SMTP service to send email.
 
 ## SSL Certificate
 When you are working with a custom python environment (not the standard one installed at swisstopo),
@@ -12,7 +12,7 @@ How to know where the certificate is in the default environment
 from certifi import where
 where()
 ```
-Overwrite the `cacert.pem` file into the custom python environment. Usually `your-env/Lib/site-packages/certifi/cacert.pem`
+Overwrite the `cacert.pem` file into the custom python environment, usually `your-env/Lib/site-packages/certifi/cacert.pem`, by the one found on the default environment.
 
 ### SMTP Mail Server Hostname
 You can pass SMTP hostname in environment variables
