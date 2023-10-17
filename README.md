@@ -1,5 +1,5 @@
 # geocat.ch link checker 
-This version use SMTP service to send email.
+This version use SMTP service w/o credentials (username & password) to send email.
 
 ## SSL Certificate
 When you are working with a custom python environment (not the standard one installed at swisstopo),
