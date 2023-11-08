@@ -1,4 +1,4 @@
-# geocat.ch link checker 
+# geocat.ch link checker
 This version use SMTP service w/o credentials (username & password) to send email.
 
 ## SSL Certificate
