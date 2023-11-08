@@ -72,7 +72,7 @@ SEARCH_UUID_API_BODY = {
 
 MAIL_SENDER = "geocat@swisstopo.ch"
 
-MAIL_SUBJECT = "geocat.ch - Invalid URL in your metadata"
+MAIL_SUBJECT = "geocat.ch - Invalid URL in your metadata for "
 
 MAIL_BODY_START_TEXT = """
 Hello,

@@ -48,7 +48,7 @@ else:
         logger.error("Cannot retrieve group information - group request bad status")
         sys.exit()
 
-for group in response.json()[1:2]:
+for group in response.json():
 
     logger.info("Processing group : %s", group["name"])
 
@@ -58,8 +58,10 @@ for group in response.json()[1:2]:
         logger.error("Processing group : %s : couldn't fetch metadata index", group["name"])
         continue
 
-    # For test purpose, send email only to the sender
+    # For Production, send email to group admin and to receiver
     # receivers = [group["email"], config.MAIL_SENDER]
+
+    # For test purpose, send email only to the sender
     receivers = [config.MAIL_SENDER]
 
     # list of tested URL that are valid
@@ -83,7 +85,9 @@ for group in response.json()[1:2]:
                     round((count / len(indexes)) * 100, 1))
 
     if len([i for i in report if len(i["errors"]) > 0]) > 0:
-        message = link_checker.get_message(report=report, receiver=receivers[0])
+        message = link_checker.get_message(report=report,
+                                            receiver=receivers[0],
+                                            group_label=group["label"]["eng"])
 
         host = os.environ.get("SMTP_ENDPOINT")
 

@@ -156,11 +156,11 @@ def check_metadata_url(index: dict, valid_url: list) -> dict:
     return result, new_valid_url
 
 
-def get_message(report: list, receiver: str) -> object:
+def get_message(report: list, receiver: str, group_label: str) -> object:
     """Creates an email message object"""
 
     message = MIMEMultipart("alternative")
-    message["Subject"] = config.MAIL_SUBJECT
+    message["Subject"] = config.MAIL_SUBJECT + group_label
     message["From"] = config.MAIL_SENDER
     message["To"] = receiver
     message["X-Priority"] = "1"  # 1 (High), 3 (normal), 5 (Low)
