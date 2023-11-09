@@ -119,6 +119,10 @@ def check_metadata_url(index: dict, valid_url: list) -> dict:
                                         "location": f"Website of {contact}"
                                     }
                                 )
+
+                                if not i["website"].lower().startswith("http"):
+                                    result["errors"][-1]["location"] += " (URL schema e.g. https or http is perhaps missing)"
+
                             else:
                                 new_valid_url.append(i["website"])
                                 valid_url.append(i["website"])
@@ -138,6 +142,9 @@ def check_metadata_url(index: dict, valid_url: list) -> dict:
                                 }
                             )
 
+                            if not url.lower().startswith("http"):
+                                result["errors"][-1]["location"] += " (URL schema e.g. https or http is perhaps missing)"
+
                         else:
                             new_valid_url.append(url)
                             valid_url.append(url)
@@ -155,6 +162,10 @@ def check_metadata_url(index: dict, valid_url: list) -> dict:
                                     "location": f"Online resource URL with {i['protocol']} protocol"
                                 }
                             )
+
+                            if not url.lower().startswith("http"):
+                                result["errors"][-1]["location"] += " (URL schema e.g. https or http is perhaps missing)"
+
                         else:
                             new_valid_url.append(url)
                             valid_url.append(url)
