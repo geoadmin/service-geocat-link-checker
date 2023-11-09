@@ -100,3 +100,8 @@ MAIL_BODY_START_HTML = """
        The geocat.ch team<br><br>
        ----------<br><br>
 """
+
+URL_WHITE_LIST = [
+    "https://map.georessourcen.ethz.ch/",
+    "https://oereb.llv.li/"
+]

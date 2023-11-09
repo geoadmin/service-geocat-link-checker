@@ -11,7 +11,10 @@ logger = logging.getLogger(__name__)
 def __url_checker(url: str, allow_redirects: bool = True) -> bool:
     """Check if URL is valid"""
 
-    headers = {"accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"}
+    headers = {
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 Edg/118.0.2088.76"
+        }
 
     RETRY = 5
 
@@ -27,6 +30,9 @@ def __url_checker(url: str, allow_redirects: bool = True) -> bool:
         HTTPStatus.UNAUTHORIZED,
         HTTPStatus.FORBIDDEN,
     ]
+
+    if url in config.URL_WHITE_LIST:
+        return True
 
     for i in range(RETRY):
 
