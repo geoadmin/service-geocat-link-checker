@@ -1,10 +1,11 @@
 import os
 import sys
+import copy
 from smtplib import SMTP
 import requests
 from dotenv import load_dotenv
 import config
-import utils
+import geopycat
 import logging
 import logging.config
 from datetime import datetime
@@ -16,7 +17,7 @@ if not os.path.exists(logs_dir):
 
 logfile = f"{datetime.now().strftime('%Y%m%d%H%M%S')}.log"
 
-log_config = utils.get_log_config(os.path.join(logs_dir, logfile))
+log_config = geopycat.utils.get_log_config(os.path.join(logs_dir, logfile))
 logging.config.dictConfig(log_config)
 
 import link_checker
@@ -25,37 +26,44 @@ load_dotenv()
 
 logger = logging.getLogger(__name__)
 
-headers = {"accept": "application/json", "Content-Type": "application/json"}
+geocat = geopycat.geocat(env="prod")
 
-for proxies in config.PROXY:
-    try:
-        response = requests.get(url = f"{config.HOST}/geonetwork/srv/api/groups",
-                        headers=headers, timeout=10, proxies=proxies)
-    except Exception as e:
-        print(e)
-    else:
-        os.environ["HTTP_PROXY"] = proxies["http"]
-        os.environ["HTTPS_PROXY"] = proxies["https"]
-        break
+# Set proxies in environment variables
+os.environ["HTTP_PROXY"] = geocat.session.proxies["http"]
+os.environ["HTTPS_PROXY"] = geocat.session.proxies["https"]
 
 try:
-    response
-except NameError:
-    logger.error("Cannot retrieve group information - group request failed")
+    users = geocat.get_users(owner_only=True)
+except:
+    logger.error("Cannot retrieve users information")
     sys.exit()
-else:
-    if response.status_code != 200:
-        logger.error("Cannot retrieve group information - group request bad status")
-        sys.exit()
 
-for group in response.json():
+user_count = 0
 
-    logger.info("Processing group : %s", group["name"])
+for user in users:
+
+    user_count += 1
+
+    logger.info("Processing User [%s/%s] ID: %s (%s %s)",
+                user_count, len(users), user["id"], user["name"], 
+                user["surname"])
+
+    query = geopycat.utils.get_search_query(published_only=True,
+                        q=f"owner:{user['id']}")
+
+    body = copy.deepcopy(config.SEARCH_API_BODY)
+    body["query"] = query
 
     try:
-        indexes = utils.get_index(in_groups=[group["id"]])
+        indexes = geocat.es_deep_search(body=body)
     except:
-        logger.error("Processing group : %s : couldn't fetch metadata index", group["name"])
+        logger.error("User [%s/%s] ID: %s - unable to retreieve metadata index",
+                user_count, len(users), user["id"])
+        continue
+
+    if len(indexes) == 0:
+        logger.warning("User [%s/%s] ID: %s - no published metadata",
+                user_count, len(users), user["id"]) 
         continue
 
     # For Production, send email to group admin and to receiver
@@ -87,7 +95,7 @@ for group in response.json():
     if len([i for i in report if len(i["errors"]) > 0]) > 0:
         message = link_checker.get_message(report=report,
                                             receiver=receivers[0],
-                                            group_label=group["label"]["eng"])
+                                            user_name=f"{user['name']} {user['surname']}")
 
         host = os.environ.get("SMTP_ENDPOINT")
 
@@ -99,7 +107,11 @@ for group in response.json():
             logger.exception(e)
 
         else:
-            logger.info("Group : %s - Mail sent", group["name"])
+            logger.info("User [%s/%s] ID: %s (%s %s) - Mail sent to %s",
+                        user_count, len(users), user["id"], user["name"],
+                        user["surname"], user["emailAddresses"][0])
 
     else:
-        logger.info("Group : %s - has no invalid URL", group["name"])
+        logger.info("User [%s/%s] ID: %s (%s %s) - has no invalid URL",
+                    user_count, len(users), user["id"], user["name"],
+                    user["surname"])

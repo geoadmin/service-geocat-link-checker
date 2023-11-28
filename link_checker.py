@@ -173,17 +173,17 @@ def check_metadata_url(index: dict, valid_url: list) -> dict:
     return result, new_valid_url
 
 
-def get_message(report: list, receiver: str, group_label: str) -> object:
+def get_message(report: list, receiver: str, user_name: str) -> object:
     """Creates an email message object"""
 
     message = MIMEMultipart("alternative")
-    message["Subject"] = config.MAIL_SUBJECT + group_label
+    message["Subject"] = config.MAIL_SUBJECT
     message["From"] = config.MAIL_SENDER
     message["To"] = receiver
     message["X-Priority"] = "1"  # 1 (High), 3 (normal), 5 (Low)
 
-    body_text = config.MAIL_BODY_START_TEXT
-    body_html = config.MAIL_BODY_START_HTML
+    body_text = config.MAIL_BODY_START_TEXT.replace("{{name}}", user_name)
+    body_html = config.MAIL_BODY_START_HTML.replace("{{name}}", user_name)
 
     for metadata in [i for i in report if len(i["errors"]) > 0]:
 
