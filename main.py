@@ -67,7 +67,7 @@ for user in users:
         continue
 
     # For Production, send email to group admin and to receiver
-    # receivers = [group["email"], config.MAIL_SENDER]
+    # receivers = [user["emailAddresses"][0], config.MAIL_SENDER]
 
     # For test purpose, send email only to the sender
     receivers = [config.MAIL_SENDER]
