@@ -2,6 +2,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from http import HTTPStatus
 import time
+import re
 import requests
 import config
 import logging
@@ -31,8 +32,9 @@ def __url_checker(url: str, allow_redirects: bool = True) -> bool:
         HTTPStatus.FORBIDDEN,
     ]
 
-    if url in config.URL_WHITE_LIST:
-        return True
+    for url_in_white_list in config.URL_WHITE_LIST:
+        if re.search(url_in_white_list, url):
+            return True
 
     for i in range(RETRY):
 
