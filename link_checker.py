@@ -106,7 +106,7 @@ def check_metadata_url(index: dict, valid_url: list) -> dict:
     #                     new_valid_url.append(i["link"])
     #                     valid_url.append(i["link"])
 
-    # Website for contacts
+    # Website for contacts (only default lang)
     for contact in ["contact", "contactForResource", "contactForDistribution"]:
 
         if contact in index["_source"]:
@@ -129,18 +129,18 @@ def check_metadata_url(index: dict, valid_url: list) -> dict:
                                 new_valid_url.append(i["website"])
                                 valid_url.append(i["website"])
 
-    # Resources Link
+    # Resources Link (multilingual)
     if "link" in index["_source"]:
         for i in index["_source"]["link"]:
             if i["protocol"].startswith(("OGC:WMS", "OGC:WMTS", "OGC:WFS")):
-                for url in set(i["urlObject"].values()):
+                for lang, url in i["urlObject"].items():
                     if url not in valid_url:
                         if not __url_checker(url, allow_redirects=False):
 
                             result["errors"].append(
                                 {
                                     "url": url,
-                                    "location": f"Online resource URL with {i['protocol']} protocol (redirect not allowed for geoservices)"
+                                    "location": f"Online resource URL in language {lang} with {i['protocol']} protocol (redirect not allowed for geoservices)"
                                 }
                             )
 
@@ -151,7 +151,7 @@ def check_metadata_url(index: dict, valid_url: list) -> dict:
                             new_valid_url.append(url)
                             valid_url.append(url)
             else:
-                for url in set(i["urlObject"].values()):
+                for lang, url in i["urlObject"].items():
                     if url not in valid_url:
                         if not __url_checker(url):
 
@@ -161,7 +161,7 @@ def check_metadata_url(index: dict, valid_url: list) -> dict:
                             result["errors"].append(
                                 {
                                     "url": url,
-                                    "location": f"Online resource URL with {i['protocol']} protocol"
+                                    "location": f"Online resource URL in language {lang} with {i['protocol']} protocol"
                                 }
                             )
 
