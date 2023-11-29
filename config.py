@@ -32,6 +32,8 @@ MAIL_SUBJECT = "geocat.ch - Invalid URL in your metadata"
 MAIL_BODY_START_TEXT = """
 Hello {{name}},
 
+You are receiving this email because you are owner of metadata with invalid URL in the swiss geodata catalogue geocat.ch.
+
 While accessing the following URL, we found some unexpected behaviour.
 Please check if those URL are still available and fix them if necessary.
 
@@ -48,6 +50,7 @@ MAIL_BODY_START_HTML = """
 <html>
   <body>
     <p>Hello {{name}}<br><br>
+        You are receiving this email because you are owner of metadata with invalid URL in the swiss geodata catalogue <a href='https://www.geocat.ch/'>geocat.ch</a>geocat.ch.<br><br>
         While accessing the following URL, we found some unexpected behaviour.<br>
         Please check if those URL are still available and fix them if necessary.<br><br>
         PS: HTTPS or HTTP schema is mandatory for all URL in geocat.ch.<br><br>

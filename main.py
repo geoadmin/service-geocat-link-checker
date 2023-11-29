@@ -95,7 +95,7 @@ for user in users:
     if len([i for i in report if len(i["errors"]) > 0]) > 0:
         message = link_checker.get_message(report=report,
                                             receiver=receivers[0],
-                                            user_name=f"{user['name']} {user['surname']}")
+                                            user_name=user['username'])
 
         host = os.environ.get("SMTP_ENDPOINT")
 
