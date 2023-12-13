@@ -51,9 +51,7 @@ In the `config.py` file, it is possible to specify URL that have to be considere
 # It uses Regex, for exact match use : ^{url}$ 
 
 URL_WHITE_LIST = [
-    "^https://map.georessourcen.ethz.ch/$",
-    "^https://oereb.llv.li/$",
-    "^http://mapplus/.*",
-    "^http://sparcgis01.ad.net.fr.ch/.*"
+    "^https://foo.ch/$",
+    "^http://foo-regex/.*"
 ]
 ```
