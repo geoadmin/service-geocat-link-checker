@@ -7,6 +7,19 @@ The link checker fetches all published metadata index (grouped by metadata owner
 
 If metadata contains invalid URL, an email is sent to the metadata owner with a list of invalid URL.
 
+## Installation
+Clone the repo and install dependencies in a python virtual environment
+```
+git clone https://github.com/geoadmin/service-geocat-link-checker.git
+
+cd service-geocat-link-checker
+
+python -m venv .venv
+source .venv/bin/activate
+
+pip install -r requirements.txt
+```
+
 ## SSL Certificate
 When you are working with a custom python environment (not the standard one installed at swisstopo),
 make sure to copy the SSL certificate from the standard environment to the custom one. The SSL certificate is used by requests to make call to https.
